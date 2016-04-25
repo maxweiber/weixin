@@ -1,5 +1,8 @@
 image: daocloud/ci-python:2.7
 
+services:
+  - redis
+
 env:
   - PATH=/home/ubuntu/virtualenv/python2.7/bin:${PATH}
   
@@ -10,3 +13,8 @@ env:
 
 script:
   - pip install -r requirements.txt
+  - mkdir -p daocloud/testresults
+  - mkdir -p daocloud/codecoverage
+  - nosetests test.py --with-xunit --xunit-file=daocloud/testresults/nosetests.xml
+  - which python && coverage run --branch test.py
+  - which python && coverage xml -o daocloud/codecoverage/coverage.xml test.py
